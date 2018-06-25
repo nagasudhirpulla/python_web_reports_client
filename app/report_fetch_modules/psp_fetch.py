@@ -11,9 +11,18 @@ import json
 import requests
 import pandas as pd
 import datetime as dt
+import numpy as np
 
 pspUrl = 'http://103.7.130.126/POSOCOUI/PSP/GetPSPData?date=%s'
 
+def getPSPDFStats(s, fromOffset, toOffset):
+    pspDF = getPSPDFSince(s, fromOffset, toOffset)
+    pspDF['value'] = pd.to_numeric(pspDF['value'], errors='coerce')
+    aggDF = pspDF.groupby(['entity', 'key'], as_index=False).agg([np.nansum, np.nanmean, np.max, np.min])
+    aggDF.columns = ['sum', 'mean', 'max', 'min']
+    aggDF = aggDF.reset_index()
+    return aggDF
+    
 def getPSPDFSince(s, fromOffset, toOffset):
     pspDF = getBlankPSPDF()
     if(not type(s) is requests.sessions.Session):
