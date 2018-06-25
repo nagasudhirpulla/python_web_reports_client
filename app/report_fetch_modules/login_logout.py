@@ -10,6 +10,9 @@ import os
 loginUrl = 'http://103.7.130.126/POSOCOUI/Account/Login'
 logOutUrl = 'http://103.7.130.126/POSOCOUI/Account/DestroySession'
 
+def urls():
+    return dict(login = loginUrl, logout = logOutUrl)
+
 # returns the session of the website after logging in
 def login():
     # get the username and password from system variables
@@ -42,11 +45,10 @@ def login():
     # return None if not logged in
     return None
 
-
 # logs out of the website, returns True if expected workflow occurs
 def logout(s):
     # verify the type of session
-    if(type(s) is not requests.sessions.Session):
+    if(not checkIfSession(s)):
         return False
     logOutResult = s.get(logOutUrl)
     if(logOutResult.status_code == requests.codes.ok):
@@ -54,4 +56,11 @@ def logout(s):
         return True
     else:
         print('didnot get a successful response')
+    return False
+
+def checkIfSession(s):
+    if(type(s) is requests.sessions.Session):
+        return True
+    else:
+        return False
     return False
