@@ -15,6 +15,15 @@ import numpy as np
 
 pspUrl = 'http://103.7.130.126/POSOCOUI/PSP/GetPSPData?date=%s'
 
+def getPSPDFStatsComparision(s, targetOffset, fromOffset, toOffset):
+    comparePspDF = getPSPDFStats(s, fromOffset, toOffset)
+    targetPspDF = getPSPDFSince(s, targetOffset, targetOffset)
+    comparePspDF = comparePspDF.groupby(['entity', 'key']).first()
+    targetPspDF = targetPspDF.groupby(['entity', 'key']).first()
+    df = pd.concat([targetPspDF, comparePspDF], axis=1)
+    return df
+    
+
 def getPSPDFStats(s, fromOffset, toOffset):
     pspDF = getPSPDFSince(s, fromOffset, toOffset)
     pspDF['value'] = pd.to_numeric(pspDF['value'], errors='coerce')
