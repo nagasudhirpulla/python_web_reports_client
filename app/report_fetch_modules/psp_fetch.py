@@ -15,6 +15,18 @@ import numpy as np
 
 pspUrl = 'http://103.7.130.126/POSOCOUI/PSP/GetPSPData?date=%s'
 
+def getValidInt(numVar):
+    isInt = False
+    intVal = 0
+    try:
+        intVal = int(numVar)
+        isInt = True
+    except:
+        # it was a string, not an int.
+        isInt = False
+        intVal = 0
+    return (isInt, intVal)
+
 def getPSPDFStatsComparision(s, targetOffset, fromOffset, toOffset):
     comparePspDF = getPSPDFStats(s, fromOffset, toOffset)
     targetPspDF = getPSPDFSince(s, targetOffset, targetOffset)
@@ -37,7 +49,7 @@ def getPSPDFSince(s, fromOffset, toOffset):
     if(not type(s) is requests.sessions.Session):
         print('didnot get valid session as a function input')
         return pspDF
-    if(not((type(fromOffset) is int) and (type(fromOffset) is int))):
+    if(not(getValidInt(fromOffset)[0] and getValidInt(fromOffset)[0])):
         print('didnot get integers as a date offset inputs')
         return pspDF
     if(fromOffset>toOffset):

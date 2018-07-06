@@ -7,6 +7,10 @@ Created on Wed Jun 27 19:49:20 2018
 pandas joing dataframes
 https://pandas.pydata.org/pandas-docs/stable/merging.html#joining-on-index
 """
+import sys
+# making the parent directory as the main path for imports
+sys.path.append("..")
+
 from report_fetch_modules import login_logout as login
 
 from report_fetch_modules import psp_fetch
@@ -18,9 +22,14 @@ import datetime as dt
 import os
 
 import numpy as np
+
+inputFileFolder = r'C:\Users\Nagasudhir\Documents\Python Projects\python_web_reports_cient\app\ui_modules'
+
 # get the directory of the script file
 # print(os.path.dirname(os.path.realpath(__file__)))
-inputFileFolder = r'C:\Users\Nagasudhir\Documents\Python Projects\python_web_reports_cient\app\ui_modules'
+if('__file__' in globals()):
+    inputFileFolder = os.path.dirname(os.path.realpath(__file__))
+
 inputFilename = os.path.join(inputFileFolder, 'input_file.xlsx')
 
 # get the analysis Key Values
@@ -38,8 +47,11 @@ s  = login.login()
 # get the psp stat comparision file
 statsDF = psp_fetch.getPSPDFStatsComparision(s,targetOffset, fromOffset, toOffset)
 
+# logout of the site
+loggedOut = login.logout(s)
+
 # dump the psp stat comparision file
-outFilename = 'psp_dump_'+dt.datetime.now().strftime('%d_%m_%y_%H_%M_%S')+'.xlsx'
+outFilename = os.path.join(inputFileFolder, 'psp_dump_' + dt.datetime.now().strftime('%d_%m_%y_%H_%M_%S')+'.xlsx')
 writer = pd.ExcelWriter(outFilename)
 statsDF.reset_index().to_excel(writer, index=False)
 writer.save()
@@ -58,11 +70,11 @@ resultDF['is_Blank'] = np.where((~pd.notnull(val_col)), 1, 0)
 resultDF['prev_band_violated'] = np.where((pd.notnull(val_col))&(val_col<resultDF['min']), 1, 0) | np.where((pd.notnull(val_col))&(val_col>resultDF['max']), 1, 0)
 resultDF['mean_deviation_perc'] = np.where(resultDF['is_Blank'] == 0, 100*(val_col-resultDF['mean'])/resultDF['mean'], None)
 
-# todo re-arrange columns
+# re-arrange columns
 resultDF = resultDF[['value', 'min_cap', 'max_cap', 'mean', 'mean_deviation_perc', 'violated', 'prev_band_violated', 'min', 'max', 'is_Blank', 'min_violated', 'max_violated', 'time']]
 
 # dump the results file
-outFilename = 'results_'+dt.datetime.now().strftime('%d_%m_%y_%H_%M_%S')+'.xlsx'
+outFilename = os.path.join(inputFileFolder, 'results_' + dt.datetime.now().strftime('%d_%m_%y_%H_%M_%S')+'.xlsx')
 writer = pd.ExcelWriter(outFilename)
 resultDF.reset_index().to_excel(writer, index=False)
 writer.save()
