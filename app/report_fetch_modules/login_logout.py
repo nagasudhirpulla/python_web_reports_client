@@ -7,8 +7,8 @@ Created on Sun Jun 24 17:07:57 2018
 import requests
 import os
 
-loginUrl = 'http://103.7.130.126/POSOCOUI/Account/Login'
-logOutUrl = 'http://103.7.130.126/POSOCOUI/Account/DestroySession'
+loginUrl = 'http://10.2.100.63/POSOCOUI/Account/Login'
+logOutUrl = 'http://10.2.100.63/POSOCOUI/Account/DestroySession'
 
 def urls():
     return dict(login = loginUrl, logout = logOutUrl)

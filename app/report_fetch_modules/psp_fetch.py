@@ -13,7 +13,7 @@ import pandas as pd
 import datetime as dt
 import numpy as np
 
-pspUrl = 'http://103.7.130.126/POSOCOUI/PSP/GetPSPData?date=%s'
+pspUrl = 'http://10.2.100.63/POSOCOUI/PSP/GetPSPData?date=%s'
 
 def getValidInt(numVar):
     isInt = False
